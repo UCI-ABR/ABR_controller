@@ -23,14 +23,19 @@
 		<uses-library android:name="com.android.future.usb.accessory"
 			android:required="false" />
 		<activity
-			android:label="@string/app_name"
-			android:name="abr.main.Main_activity"
-			android:launchMode="singleTask"
+			android:name=".Settings"
 			android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+		</activity>
+
+		<activity
+			android:label="@string/app_name"
+			android:name="abr.main.Main_activity"
+			android:launchMode="singleTask"
+			android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
 			</intent-filter>
