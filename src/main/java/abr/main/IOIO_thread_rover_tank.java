@@ -63,13 +63,13 @@ public class IOIO_thread_rover_tank extends IOIO_thread
     public synchronized void move(int value)
     {
         if (value > 1500) {
-            speed_left = (float)1.0;
-            speed_right = (float)1.0;
+            speed_left = (float).5;
+            speed_right = (float).5;
             direction_left = true;
             direction_right = true;
         } else if (value < 1500) {
-            speed_left = (float)1.0;
-            speed_right = (float)1.0;
+            speed_left = (float).5;
+            speed_right = (float).5;
             direction_left = false;
             direction_right = false;
         } else {

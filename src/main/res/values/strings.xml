@@ -8,7 +8,8 @@
     <string-array name="cd_arrays">
         <item>RC Mode</item>
         <item>Serial Mode</item>
-        <item>Rover Mode</item>
+        <item>Rover 4WD Mode</item>
+        <item>Rover Tank Mode</item>
     </string-array>
 
 </resources>

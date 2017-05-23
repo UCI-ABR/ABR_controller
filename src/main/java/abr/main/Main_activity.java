@@ -18,7 +18,8 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 	JoyStickClass js_left, js_right;
 	private final int PWM = 0;
 	private final int SERIAL = 1;
-	private final int ROVER = 2;
+	private final int ROVER_4WD = 2;
+	private final int ROVER_TANK = 3;
 	private int mode;
 	private String selectedCurrentDisplay;
 	IOIO_thread m_ioio_thread;
@@ -35,8 +36,10 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 			mode = PWM;
 		else if(selectedCurrentDisplay.equals("Serial Mode"))
 			mode = SERIAL;
+		else if(selectedCurrentDisplay.equals("Rover 4WD Mode"))
+			mode = ROVER_4WD;
 		else
-			mode = ROVER;
+			mode = ROVER_TANK;
 
 
 		layout_left_joystick = (RelativeLayout)findViewById(R.id.layout_left_joystick);
@@ -82,8 +85,8 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 				if(arg1.getAction() == MotionEvent.ACTION_DOWN	|| arg1.getAction() == MotionEvent.ACTION_MOVE) 
 				{
 					int direction = js_right.get4Direction();
-					if(direction == JoyStickClass.STICK_UP) 				m_ioio_thread.turn(1600);
-					else if(direction == JoyStickClass.STICK_DOWN) 			m_ioio_thread.turn(1400);
+					if(direction == JoyStickClass.STICK_RIGHT) 				m_ioio_thread.turn(1600);
+					else if(direction == JoyStickClass.STICK_LEFT) 			m_ioio_thread.turn(1400);
 					else if(direction == JoyStickClass.STICK_NONE) 			m_ioio_thread.turn(1500);
 				}
 				else if(arg1.getAction() == MotionEvent.ACTION_UP) //user stopped touching screen on layout
@@ -110,8 +113,10 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 				m_ioio_thread = new IOIO_thread_pwm();
 			else if(mode == SERIAL)
 				m_ioio_thread = new IOIO_thread_serial();
+			else if(mode == ROVER_4WD)
+				m_ioio_thread = new IOIO_thread_rover_4wd();
 			else
-				m_ioio_thread = new IOIO_thread_rover();
+				m_ioio_thread = new IOIO_thread_rover_tank();
 			return m_ioio_thread;
 		}
 		else return null;
