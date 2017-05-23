@@ -7,7 +7,7 @@ import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 
-public class IOIO_thread_rover extends IOIO_thread
+public class IOIO_thread_rover_tank extends IOIO_thread
 {
     private PwmOutput pwm_left1, pwm_left2, pwm_right1,pwm_right2;
     private DigitalOutput dir_left1, dir_left2, dir_right1, dir_right2;
@@ -49,10 +49,10 @@ public class IOIO_thread_rover extends IOIO_thread
 			pwm_right1.setDutyCycle(speed_right);
 			pwm_right2.setDutyCycle(speed_right);
 
-			dir_left1.write(!direction_left);
-			dir_left2.write(direction_left);
-			dir_right1.write(!direction_right);
-			dir_right2.write(direction_right);
+			dir_left1.write(direction_left);
+			dir_left2.write(!direction_left);
+			dir_right1.write(direction_right);
+			dir_right2.write(!direction_right);
 
             Thread.sleep(10);
         }
@@ -63,13 +63,13 @@ public class IOIO_thread_rover extends IOIO_thread
     public synchronized void move(int value)
     {
         if (value > 1500) {
-            speed_left = (float)0.50;
-            speed_right = (float)0.50;
+            speed_left = (float)1.0;
+            speed_right = (float)1.0;
             direction_left = true;
             direction_right = true;
         } else if (value < 1500) {
-            speed_left = (float)0.50;
-            speed_right = (float)0.50;
+            speed_left = (float)1.0;
+            speed_right = (float)1.0;
             direction_left = false;
             direction_right = false;
         } else {
@@ -81,13 +81,13 @@ public class IOIO_thread_rover extends IOIO_thread
     public synchronized void turn(int value)
     {
         if (value > 1500) {
-            speed_left = (float)0.5;
-            speed_right = (float)0.5;
+            speed_left = (float)1.0;
+            speed_right = (float)1.0;
             direction_left = true;
             direction_right = false;
         } else if (value < 1500) {
-            speed_left = (float)0.5;
-            speed_right = (float)0.5;
+            speed_left = (float)1.0;
+            speed_right = (float)1.0;
             direction_left = false;
             direction_right = true;
         } else {
