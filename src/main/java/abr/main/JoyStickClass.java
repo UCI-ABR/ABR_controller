@@ -56,7 +56,7 @@ public class JoyStickClass {
 	
 	public void drawStick(MotionEvent arg1) {
 		position_x = (int) (arg1.getX() - (params.width / 2));
-		position_y = (int) (arg1.getY() - (params.height / 2));
+		position_y = (int) ((params.height / 2)-arg1.getY());
 	    distance = (float) Math.sqrt(Math.pow(position_x, 2) + Math.pow(position_y, 2));
 	    angle = (float) cal_angle(position_x, position_y);
 		
@@ -233,6 +233,24 @@ public class JoyStickClass {
 
 	public int getLayoutHeight() {
 		return params.height;
+	}
+
+	public float getnormX() {
+		if(distance > min_distance && touch_state)
+		{
+			float f = (float )position_x / (float)(params.width/2);
+			return f;
+		}
+		return 0;
+	}
+
+	public float getnormY() {
+		if(distance > min_distance && touch_state)
+		{
+			float f = (float )position_y / (float)(params.height/2);
+			return f;
+		}
+		return 0;
 	}
 	
 	private double cal_angle(float x, float y) {

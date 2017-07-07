@@ -45,26 +45,47 @@ public class IOIO_thread_rover_4wd extends IOIO_thread
 
         try
         {
+            int left_motor = 1500+(int)Math.round(.5*((move_val-1500)+(turn_val-1500)));
+            int right_motor = 1500+(int)Math.round(.5*((move_val-1500)-(turn_val-1500)));
+            Log.i("haha","lm:"+left_motor);
+            Log.i("haha","rm:"+right_motor);
+            if(left_motor > 1500){
+                direction_left = true;
+            } else {
+                direction_left = false;
+            }
+            speed_left = Math.abs((float)(left_motor - 1500)/500);
+            if(right_motor > 1500){
+                direction_right = true;
+            } else {
+                direction_right = false;
+            }
+            speed_right = Math.abs((float)(right_motor - 1500)/500);
+            Log.i("haha","sl:"+speed_left);
+            Log.i("haha","sr:"+speed_right);
+
             //This steering method will maximize the speed of the robot.
+            /*
             if(move_val != 1500){
                 direction_left = ((move_val - 1500) > 0);
                 direction_right = ((move_val - 1500) > 0);
-                speed_left = .3f;
-                speed_right = .3f;
+                speed_left = .18f; //18
+                speed_right = .18f; //18
                 if(turn_val > 1500){
-                    speed_right -= .2;
+                    speed_right -= .1;
                 } else {
-                    speed_left -= .2;
+                    speed_left -= .1;
                 }
             } else if(turn_val !=1500) {
-                speed_left = 0.3f;
-                speed_right = 0.3f;
+                speed_left = 0.6f;
+                speed_right = 0.6f;
                 direction_left = ((turn_val - 1500) > 0);
                 direction_right = ((turn_val - 1500) < 0);
             } else {
                 speed_left = 0.0f;
                 speed_right = 0.0f;
             }
+            */
 
             pwm_left1.setDutyCycle(speed_left);
             pwm_left2.setDutyCycle(speed_left);

@@ -6,6 +6,7 @@ import ioio.lib.util.android.IOIOAndroidApplicationHelper;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -65,10 +66,25 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 				js_left.drawStick(arg1);
 				if(arg1.getAction() == MotionEvent.ACTION_DOWN	|| arg1.getAction() == MotionEvent.ACTION_MOVE) 
 				{
+					/*
 					int direction = js_left.get4Direction();
 					if(direction == JoyStickClass.STICK_UP) 				m_ioio_thread.move(1600);
 					else if(direction == JoyStickClass.STICK_DOWN) 			m_ioio_thread.move(1400);
 					else if(direction == JoyStickClass.STICK_NONE) 			m_ioio_thread.move(1500);
+					*/
+					int pwm_move = 1500 + (int)(500*js_left.getnormY());
+					//Log.i("haha","normy:"+js_left.getnormY());
+					//Log.i("haha","pwm_move:"+pwm_move);
+					//Log.i("haha","positionx:"+js_left.getX());
+					//Log.i("haha","positiony:"+js_left.getY());
+					int direction = js_left.get4Direction();
+					if(direction == JoyStickClass.STICK_UP){
+						m_ioio_thread.move(pwm_move);
+					} else if(direction == JoyStickClass.STICK_DOWN) {
+						m_ioio_thread.move(pwm_move);
+					} else if(direction == JoyStickClass.STICK_NONE) {
+						m_ioio_thread.move(1500);
+					}
 				}
 				else if(arg1.getAction() == MotionEvent.ACTION_UP) //user stopped touching screen on layout
 				{
@@ -84,10 +100,25 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 				js_right.drawStick(arg1);
 				if(arg1.getAction() == MotionEvent.ACTION_DOWN	|| arg1.getAction() == MotionEvent.ACTION_MOVE) 
 				{
+					int pwm_turn = 1500 + (int)(500*js_right.getnormX());
+					//Log.i("haha","normx:"+js_right.getnormX());
+					//Log.i("haha","pwm_turn:"+pwm_turn);
+					//Log.i("haha","positionx:"+js_right.getX());
+					//Log.i("haha","positiony:"+js_right.getY());
+					/*
 					int direction = js_right.get4Direction();
 					if(direction == JoyStickClass.STICK_RIGHT) 				m_ioio_thread.turn(1600);
 					else if(direction == JoyStickClass.STICK_LEFT) 			m_ioio_thread.turn(1400);
 					else if(direction == JoyStickClass.STICK_NONE) 			m_ioio_thread.turn(1500);
+					*/
+					int direction = js_right.get4Direction();
+					if(direction == JoyStickClass.STICK_RIGHT){
+						m_ioio_thread.turn(pwm_turn);
+					} else if(direction == JoyStickClass.STICK_LEFT) {
+						m_ioio_thread.turn(pwm_turn);
+					} else if(direction == JoyStickClass.STICK_NONE) {
+						m_ioio_thread.turn(1500);
+					}
 				}
 				else if(arg1.getAction() == MotionEvent.ACTION_UP) //user stopped touching screen on layout
 				{
