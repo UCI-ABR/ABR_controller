@@ -1,54 +1,115 @@
 package KalmanFilterLibrary;
 
+
 /**
  * Created by Joseph on 7/15/2017.
+ * Contains methods necessary for handling kalman filter calculation including:
+ *          -manipulating velocity values of current state matrix,
+ *          -setting & manipulating input matrix for calculation, and
+ *          -performing the calculation steps
  */
 
 public class KalmanFilterCalculation extends KalmanFilterEquations{
-    //Creates & Initializes Input Matrix for Kalman Filter using
-    //StartStateMAt for Xprev & Pmat (from Settings) for Pprev
-    //Xcurr is initialized to zero (to be set by sensor readings)
-    public static double[][] initializeInputMatrix(double[] StartStateMat) {
-        double[][] InputMat = new double[StartStateMat.length + 2][StartStateMat.length];
-
-        for (int row=0; row<StartStateMat.length; row++) {
-            InputMat[0][row] = StartStateMat[row];
-            InputMat[1][row] = 0;
-        }
-
-        for (int row=0; row<StartStateMat.length; row++) {
-            for (int col=0; col<StartStateMat.length; col++) {
-                InputMat[row + 2][col] = Settings.Pmat[row][col];
-            }
-        }
-
-        return InputMat;
-    }
-
-    //Calculate New Position and Process Covariance Matrices from Previous;
-    //Assign New Values to 'prev' Matrices + Set SMcurr Nx1 to zero
-    public static double[][] KalmanFilter(double[][] InputMat) {
-        /*
+    private float compass = 0;
+    private double v_x = 0, v_y = 0;
+    private static double[] startStateMatrix = new double[4];
+    private static double[] currentStateMatrix = new double[4];
+    private static double[][] inputMatrix = new double[startStateMatrix.length + 2][startStateMatrix.length];
+    /*
             InputMatrix Layout:
             {{SMprev 1x4},
              {SMcurr 1x4},
              {Pprev 4x4}}
-        */
-        //Initialize SM & P
-        double[] SMprev = new double[InputMat[0].length];                            //Previous Measured KF State Matrix
-        double[] SMcurr = new double[InputMat[0].length];                            //Current Measured KF State Matrix
-        double[][] Pprev = new double[InputMat[0].length][InputMat[0].length];       //Previous Process Covariance Matrix
+    */
 
-        //Make SM & P to the Previous State + Get Current SM
-        for(int row=0; row<SMprev.length; row++) {
-            SMprev[row] = InputMat[0][row];
-            SMcurr[row] = InputMat[1][row];
+
+    public void setCompass(float external_compass) {
+        compass = external_compass;
+    }
+
+    //Set velocities of State Matrix
+    public void setMeasuredVelocity(double x_velocity, double y_velocity) {
+        currentStateMatrix[2] = x_velocity;
+        currentStateMatrix[3] = y_velocity;
+    }
+
+    public double getMeasuredVelocityX() {
+        //facing north or south
+        if ((compass >= 330 && compass < 30) || (compass >= 150 && compass < 210)) {
+            v_x = 0;
+        }
+        //facing east or west
+        else if ((compass >= 60 && compass < 120) || (compass >= 240 && compass < 300)) {
+            v_x = 0.12;
+        }
+        //facing north east or south east or south west or north west
+        else if ((compass >= 30 && compass < 60) || (compass >= 120 && compass < 150) || (compass >= 210 && compass < 240) || (compass >= 300 && compass < 330)) {
+            v_x = 0.12;
         }
 
+        return v_x;
+    }
+
+    public double getMeasuredVelocityY() {
+        //facing north or south
+        if ((compass >= 330 && compass < 30) || (compass >= 150 && compass < 210)) {
+            v_y = 0.12;
+        }
+        //facing east or west
+        else if ((compass >= 60 && compass < 120) || (compass >= 240 && compass < 300)) {
+            v_y = 0;
+        }
+        //facing north east or south east or south west or north west
+        else if ((compass >= 30 && compass < 60) || (compass >= 120 && compass < 150) || (compass >= 210 && compass < 240) || (compass >= 300 && compass < 330)) {
+            v_y = 0.12;
+        }
+
+        return v_y;
+    }
+
+    public void setStartSM(double[] stateMatrix){
+        startStateMatrix = stateMatrix;
+        createInputMatrix();
+    }
+
+    public void setCurrentSM(double[] stateMatrix) {
+        currentStateMatrix = stateMatrix;
+    }
+
+    //Get current SM from 1st row of input matrix
+    private double[] getCurrentSM() { return currentStateMatrix; }
+
+    //Creates input matrix for kalman filter calculation
+    private void createInputMatrix() {
+        for (int row=0; row<startStateMatrix.length; row++) {
+            inputMatrix[0][row] = startStateMatrix[row];
+            inputMatrix[1][row] = 0;
+        }
+
+        for (int row=0; row<startStateMatrix.length; row++) {
+            System.arraycopy(Pmat[row],0,inputMatrix[row + 2],0,startStateMatrix.length);
+        }
+    }
+
+    //Place current SM into 2nd row of input matrix
+    private void setInputMatrix() {
+        System.arraycopy(currentStateMatrix,0,inputMatrix[1],0,currentStateMatrix.length);
+    }
+
+    //Calculate New Position and Process Covariance Matrices from Previous;
+    //Assign New Values to 'prev' Matrices + Set SMcurr Nx1 to zero
+    private void KalmanFilter() {
+        //Initialize SM & P
+        double[] SMprev = new double[inputMatrix[0].length];                            //Previous KF State Matrix
+        double[] SMcurr = new double[inputMatrix[0].length];                             //Current Measure KF State Matrix
+        double[][] Pprev = new double[inputMatrix[0].length][inputMatrix[0].length];    //Previous Process Covariance Matrix
+
+        //Make SM & P to the Previous State + Get Current SM
+        System.arraycopy(inputMatrix[0],0,SMprev,0,inputMatrix[0].length);
+        System.arraycopy(currentStateMatrix,0,SMcurr,0,inputMatrix[0].length);
+
         for(int row=0; row<Pprev.length; row++) {
-            for (int col=0; col<Pprev[row].length; col++) {
-                Pprev[row][col] = InputMat[row + 2][col];
-            }
+            System.arraycopy(inputMatrix[row + 2],0,Pprev[row],0,Pprev[row].length);
         }
 
         //Calculate Predicted State
@@ -67,36 +128,37 @@ public class KalmanFilterCalculation extends KalmanFilterEquations{
 
         //Current Becomes Previous
         for (int row=0; row<SMprev.length; row++) {
-            InputMat[0][row] = Xk[row];
-            InputMat[1][row] = 0;             //Reset SMcurr
+            inputMatrix[0][row] = Xk[row];
+            inputMatrix[1][row] = 0;             //Reset SMcurr
         }
 
         for (int row=0; row<Pprev.length; row++) {
-            for (int col=0; col<Pprev[row].length; col++) {
-                InputMat[row + 2][col] = Pk[row][col];
-            }
+            System.arraycopy(Pk[row],0,inputMatrix[row + 2],0,Pprev[row].length);
         }
-        //Output of Updated State & Process Covariance Matrix;
-        return InputMat;
+/*
+        //EXTRA STEP: modify Xk to be w/i map bounds
+        if (Xk[0] < 1) {
+            Xk[0] = 1;
+        }
+        else if (Xk[0] > (map_size - 2)) {
+            Xk[0] = (map_size - 2);
+        }
+
+        if (Xk[1] < 1) {
+            Xk[1] = 1;
+        }
+        else if (Xk[1] > (map_size - 2)) {
+            Xk[1] = (map_size - 2);
+        }
+*/
+        //Output of state matrix
+        System.arraycopy(Xk,0,currentStateMatrix,0,Xk.length);
+
     }
 
-    //Input SMcurr into 2nd Row of InputMat
-    public static double[][] setCurrStateMatrix(double[][] InputMat, double[] StateMat) {
-        for (int row=0; row<StateMat.length; row++) {
-            InputMat[1][row] = StateMat[row];
-        }
-
-        return InputMat;
-    }
-
-    //Get SMcurr from 2nd Row of InputMat
-    public static double[] getCurrStateMatrix(double[][] InputMat) {
-        double[] SMcurr = new double[InputMat[0].length];
-
-        for(int row=0; row<InputMat[0].length; row++) {
-            SMcurr[row] = InputMat[1][row];
-        }
-
-        return SMcurr;
+    public double[] getNextSM() {
+        setInputMatrix();
+        KalmanFilter();
+        return getCurrentSM();
     }
 }
