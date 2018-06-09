@@ -14,6 +14,8 @@ public class IOIO_thread_rover_tank extends IOIO_thread
     float speed_left, speed_right;
     boolean direction_left, direction_right;
 
+    public final double ProximityThreshold = 0.7; //IR sensor threshold for collisions
+
     @Override
     public void setup() throws ConnectionLostException
     {
