@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 buildscript {
   repositories {
     mavenCentral()
-      google()
+    google()
   }
 
   dependencies {
@@ -31,5 +31,6 @@ repositories {
   maven {
     url  "http://dl.bintray.com/steveliles/maven"
   }
+  google()
 }
 

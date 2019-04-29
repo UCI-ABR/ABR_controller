@@ -47,18 +47,18 @@ public class Main_activity extends Activity implements IOIOLooperProvider 		// i
 		layout_right_joystick = (RelativeLayout)findViewById(R.id.layout_right_joystick);
 	
 		js_left = new JoyStickClass(getApplicationContext(), layout_left_joystick, R.drawable.image_button);
-		js_left.setStickSize(150, 150);
+		js_left.setStickSize( 50, 50);
 		js_left.setLayoutAlpha(150);
 		js_left.setStickAlpha(100);
-		js_left.setOffset(90);
-		js_left.setMinimumDistance(50);
+		js_left.setOffset(0);
+		js_left.setMinimumDistance(0);
 		
 		js_right = new JoyStickClass(getApplicationContext(), layout_right_joystick, R.drawable.image_button);
-		js_right.setStickSize(150, 150);
+		js_right.setStickSize(50, 50);
 		js_right.setLayoutAlpha(150);
 		js_right.setStickAlpha(100);
-		js_right.setOffset(90);
-		js_right.setMinimumDistance(50);
+		js_right.setOffset(0);
+		js_right.setMinimumDistance(0);
 
 		layout_left_joystick.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View arg0, MotionEvent arg1) 

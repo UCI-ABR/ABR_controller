@@ -5,8 +5,8 @@
 
     <RelativeLayout
         android:id="@+id/layout_right_joystick"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="16dp"
@@ -15,8 +15,8 @@
 
     <RelativeLayout
         android:id="@+id/layout_left_joystick"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/image_button_bg" >
